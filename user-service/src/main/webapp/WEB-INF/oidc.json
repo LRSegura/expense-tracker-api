@@ -1,0 +1,12 @@
+{
+  "client-id": "user-service-api",
+  "auth-server-url": "http://localhost:8180",
+  "realm": "expense-tracker",
+  "ssl-required": "external",
+  "resource": "user-service-api",
+  "verify-token-audience": true,
+  "credentials": {
+    "secret": "39dLCdPxu31vv3jxeUPRlRQYqmgrOyE9"
+  },
+  "use-resource-role-mappings": true
+}
