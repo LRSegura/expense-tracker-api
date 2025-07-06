@@ -9,8 +9,6 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import java.util.List;
-
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -22,19 +20,41 @@ public class UserResource {
     private UserRepository userRepository;
 
     @POST
-    public Response createUser(User user) {
-        userRepository.save(user);
-        return Response.status(Response.Status.CREATED).entity(user).build();
+    public Response createUser(User newUser) {
+        Result<User> result = userRepository.save(newUser);
+        if (result.isSuccess()) {
+            return buildCreatedResponse(result.getValue());
+        } else {
+            return buildBadRequestResponse(result.getError());
+        }
     }
 
     @GET
-    public List<User> getUsers() {
-        return userRepository.findAll();
+    public Response getUsers() {
+        return buildOkResponse(userRepository.findAll());
     }
 
     @GET
     @Path("/{id}")
-    public User getUserById(@PathParam("id") Long id) {
-        return userRepository.findById(id).orElse(null);
+    public Response getUserById(@PathParam("id") Long id) {
+        return userRepository.findById(id)
+                .map(this::buildOkResponse)
+                .orElseGet(this::buildNoContentResponse);
+    }
+
+    private Response buildCreatedResponse(Object entity) {
+        return Response.status(Response.Status.CREATED).entity(entity).build();
+    }
+
+    private Response buildBadRequestResponse(String message) {
+        return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
+    }
+
+    private Response buildOkResponse(Object entity) {
+        return Response.ok(entity).build();
+    }
+
+    private Response buildNoContentResponse() {
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 }
