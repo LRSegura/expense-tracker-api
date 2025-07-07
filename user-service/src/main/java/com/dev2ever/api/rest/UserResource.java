@@ -1,5 +1,7 @@
-package com.dev2ever.api;
+package com.dev2ever.api.rest;
 
+import com.dev2ever.util.OperationResult;
+import com.dev2ever.api.rest.model.ApiResponse;
 import com.dev2ever.model.User;
 import com.dev2ever.repository.UserRepository;
 import jakarta.annotation.security.RolesAllowed;
@@ -21,11 +23,14 @@ public class UserResource {
 
     @POST
     public Response createUser(User newUser) {
-        Result<User> result = userRepository.save(newUser);
-        if (result.isSuccess()) {
-            return buildCreatedResponse(result.getValue());
+        OperationResult<User> operationResult = userRepository.save(newUser);
+
+        if (operationResult.isSuccess()) {
+            ApiResponse<User> response = ApiResponse.success(operationResult.getValue());
+            return buildCreatedResponse(response);
         } else {
-            return buildBadRequestResponse(result.getError());
+            ApiResponse<Void> response = ApiResponse.error(operationResult.getErrorMessage(), operationResult.getErrorCode());
+            return buildBadRequestResponse(response);
         }
     }
 
@@ -46,7 +51,7 @@ public class UserResource {
         return Response.status(Response.Status.CREATED).entity(entity).build();
     }
 
-    private Response buildBadRequestResponse(String message) {
+    private Response buildBadRequestResponse(Object message) {
         return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
     }
 

@@ -1,16 +1,17 @@
 package com.dev2ever.repository;
 
-import com.dev2ever.api.Result;
+import com.dev2ever.model.ErrorCode;
 import com.dev2ever.model.User;
+import com.dev2ever.util.OperationResult;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
-import java.util.ArrayList;
 
 @ApplicationScoped
 public class UserRepository {
@@ -21,50 +22,18 @@ public class UserRepository {
     private EntityManager entityManager;
 
     @Transactional
-    public Result<User> save(User user) {
-        List<String> validationError = validateUser(user);
-        if (!validationError.isEmpty()) {
-            return Result.error(String.join(", ", validationError));
-        }
-        List<String> uniqueError = checkUniqueConstraints(user);
-        if (!uniqueError.isEmpty()) {
-            return Result.error(String.join(", ", uniqueError));
-        }
-
+    public OperationResult<User> save(User user) {
         try {
             entityManager.persist(user);
-            return Result.success(user);
+            return OperationResult.success(user);
+        } catch (PersistenceException e) {
+            logger.warning("Constraint violation while saving user: " + e.getMessage());
+            return OperationResult.error(ErrorCode.DUPLICATE_RESOURCE, "Username or email already exists.");
         } catch (Exception e) {
             logger.severe("Error saving user: " + e.getMessage());
-            return Result.error("Internal error saving user");
+            return OperationResult.error(ErrorCode.INTERNAL_SERVER_ERROR, "An unexpected error occurred while saving the user.");
         }
     }
-
-    private List<String> validateUser(User user) {
-        List<String> errors = new ArrayList<>();
-        if (user.getUsername() == null) {
-            errors.add("Username cannot be null");
-        }
-        if (user.getEmail() == null) {
-            errors.add("Email cannot be null");
-        }
-        if (user.getPassword() == null) {
-            errors.add("Password cannot be null");
-        }
-        return errors;
-    }
-
-    private List<String> checkUniqueConstraints(User user) {
-        List<String> errors = new ArrayList<>();
-        if (findByUsername(user.getUsername()).isPresent()) {
-            errors.add("Username already exists");
-        }
-        if (findByEmail(user.getEmail()).isPresent()) {
-            errors.add("Email already exists");
-        }
-        return errors;
-    }
-
 
     public Optional<User> findById(Long id) {
         return Optional.ofNullable(entityManager.find(User.class, id));
