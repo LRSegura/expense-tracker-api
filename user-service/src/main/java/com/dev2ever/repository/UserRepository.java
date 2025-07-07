@@ -94,4 +94,58 @@ public class UserRepository {
     public List<User> findAll() {
         return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
     }
+
+    /**
+     * Deletes a user from the database by their ID.
+     *
+     * @param id The ID of the user to delete
+     * @return OperationResult indicating success or failure of the deletion
+     */
+    @Transactional
+    public OperationResult<Void> deleteById(Long id) {
+        try {
+            User user = entityManager.find(User.class, id);
+            if (user != null) {
+                entityManager.remove(user);
+                return OperationResult.success();
+            }
+            return OperationResult.error(ErrorCode.NOT_FOUND, "User not found with ID: " + id);
+        } catch (Exception e) {
+            logger.severe("Error deleting user: " + e.getMessage());
+            return OperationResult.error(ErrorCode.INTERNAL_SERVER_ERROR, "An unexpected error occurred while deleting the user.");
+        }
+    }
+
+    /**
+     * Updates the fields of an existing user in the database.
+     *
+     * @param id          The ID of the user to update
+     * @param updatedUser The user object containing updated information
+     * @return OperationResult containing the updated user or error details if the operation failed
+     */
+    @Transactional
+    public OperationResult<User> updateUserFields(Long id, User updatedUser) {
+        try {
+            User existingUser = entityManager.find(User.class, id);
+            if (existingUser == null) {
+                return OperationResult.error(ErrorCode.NOT_FOUND, "User not found with ID: " + id);
+            }
+
+            existingUser.setUsername(updatedUser.getUsername());
+            existingUser.setEmail(updatedUser.getEmail());
+            existingUser.setPassword(updatedUser.getPassword());
+            existingUser.setFullName(updatedUser.getFullName());
+
+            entityManager.flush();
+            return OperationResult.success(existingUser);
+        } catch (ConstraintViolationException e) {
+            logger.severe("Constraint violation while updating user: " + e.getMessage());
+            return OperationResult.error(ErrorCode.DUPLICATE_RESOURCE, "Username or email already exists.");
+        } catch (Exception e) {
+            logger.severe("Error updating user: " + e.getMessage());
+            return OperationResult.error(ErrorCode.INTERNAL_SERVER_ERROR, "An unexpected error occurred while updating the user.");
+        }
+    }
+
+
 }

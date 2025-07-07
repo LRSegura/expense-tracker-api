@@ -75,4 +75,50 @@ public class UserResource {
                 .orElseGet(() -> ApiResponse.success().buildNoContentResponse());
     }
 
+    /**
+     * Deletes a user from the system by their ID.
+     *
+     * @param id The ID of the user to delete
+     * @return Response with status:
+     * 200 (OK) if user was successfully deleted
+     * 404 (Not Found) if user doesn't exist
+     * 500 (Internal Server Error) if an unexpected error occurs
+     */
+    @DELETE
+    @Path("/{id}")
+    public Response deleteUser(@PathParam("id") Long id) {
+        OperationResult<Void> operationResult = userRepository.deleteById(id);
+
+        if (operationResult.isSuccess()) {
+            return ApiResponse.success().buildOkResponse();
+        } else {
+            return ApiResponse.error(operationResult.getErrorMessage(), operationResult.getErrorCode())
+                    .buildDynamicErrorResponse();
+        }
+    }
+
+    /**
+     * Updates an existing user in the system.
+     *
+     * @param id          The ID of the user to update
+     * @param updatedUser The user object containing the updated user details
+     * @return Response with status:
+     * 200 (OK) if the user was successfully updated
+     * 404 (Not Found) if the user doesn't exist
+     * 409 (Conflict) if username or email already exists
+     * 400 (Bad Request) if validation fails
+     * 500 (Internal Server Error) if an unexpected error occurs
+     */
+    @PUT
+    @Path("/{id}")
+    public Response updateUser(@PathParam("id") Long id, User updatedUser) {
+        OperationResult<User> operationResult = userRepository.updateUserFields(id, updatedUser);
+
+        if (operationResult.isSuccess()) {
+            return ApiResponse.success(operationResult.getValue()).buildOkResponse();
+        } else {
+            return ApiResponse.error(operationResult.getErrorMessage(), operationResult.getErrorCode())
+                    .buildDynamicErrorResponse();
+        }
+    }
 }
