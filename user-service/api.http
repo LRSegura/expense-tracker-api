@@ -43,9 +43,10 @@ Content-Type: application/json
 # curl -X GET http://localhost:8080/user-service/api/users
 #  -H "Accept: application/json"
 #  -H "Authorization: Bearer <token>"
+# @no-redirect
 GET http://localhost:8080/user-service/api/users
 Accept: application/json
-Authorization: Bearer <token>
+#Authorization: Bearer <token>
 
 ###
 
@@ -91,6 +92,30 @@ Content-Type: application/json
 }
 
 ###
+
+# curl -X POST http://localhost:8080/user-service/api/users/register
+#-H "Content-Type: application/json"
+#-d '{
+#  "username": "newUser",
+#  "email": "newuser@example.com",
+#  "firstName": "New",
+#  "lastName": "User",
+#  "password": "password123"
+#}'
+POST http://localhost:8080/user-service/api/users/register
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJtVG9LSFpiSTJHTHBleThqNUhVb0lvQzliVHhfcHBpNFRocnpFSnlrRXJnIn0.eyJleHAiOjE3NTIxMzIwMjYsImlhdCI6MTc1MjEzMTcyNiwianRpIjoib25ydHJvOmViMDM3MmY0LTA5MzMtNDc5Yy1iNGJhLWZiMjYyODNhZmM4MCIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODE4MC9yZWFsbXMvZXhwZW5zZS10cmFja2VyIiwiYXVkIjpbInVzZXItc2VydmljZS1hcGkiLCJhY2NvdW50Il0sInN1YiI6ImQ3MWNlZmYxLTYwMzEtNGEyYi1iNWM5LWYxZjUyOTdjMTlhZiIsInR5cCI6IkJlYXJlciIsImF6cCI6InVzZXItc2VydmljZS1hcGkiLCJzaWQiOiJlNTM1MGM5Mi0xYTdkLTQ5NGUtYTMzNy1hNWJhMjU0Yzc3MDMiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHA6Ly9sb2NhbGhvc3Q6ODA4MCJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsib2ZmbGluZV9hY2Nlc3MiLCJkZWZhdWx0LXJvbGVzLWV4cGVuc2UtdHJhY2tlciIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsidXNlci1zZXJ2aWNlLWFwaSI6eyJyb2xlcyI6WyJ1c2VyIl19LCJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6InByb2ZpbGUgZW1haWwiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsIm5hbWUiOiJMdWlzIFNlZ3VyYSIsInByZWZlcnJlZF91c2VybmFtZSI6ImxzZWd1cmEiLCJnaXZlbl9uYW1lIjoiTHVpcyIsImZhbWlseV9uYW1lIjoiU2VndXJhIiwiZW1haWwiOiJscnNlZ3VyYW1hcnRpbmV6QGdtYWlsLmNvbSJ9.ei78pAf5r8aTmEwr0BAhR9F0qRWKNTIaXCZkEGXBVcoHXLDVYLfUoihQv-N_APIYCmBx0FxpwqmcGIvdKTaJHqUBz2txJBSKrlu1NHhJRiRqJ-z50fQ5zZSJCTZzqNYgDvhLxh3jqv8zGpH7ulQ4i5oZDwfWmTVuOfornFtUm7rpvH7IK2-2XDNYQAn-lEDCfVClCXg3ccyOthpHiQrepuHSOBsY5HKHjyNv_2gEEIeujUO-xExQNQAudnbcEd82ODLRsyTQCFQF_firgSVkx3P3HErtMnxmD5sTT_GFVtKD0nkaTC7LIGYVnBcQnTaFegig03m3DqfWA24RlBeQPA
+
+{
+  "username": "newUser",
+  "email": "newuser@example.com",
+  "firstName": "New",
+  "lastName": "User",
+  "password": "password123"
+}
+
+###
+
 
 
 

@@ -5,6 +5,8 @@
   "ssl-required": "external",
   "resource": "user-service-api",
   "verify-token-audience": true,
+  "bearer-only": true,
+  "autodetect-bearer-only": true,
   "credentials": {
     "secret": "39dLCdPxu31vv3jxeUPRlRQYqmgrOyE9"
   },

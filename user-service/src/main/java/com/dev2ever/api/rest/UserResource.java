@@ -1,9 +1,8 @@
 package com.dev2ever.api.rest;
 
-import com.dev2ever.util.OperationResult;
 import com.dev2ever.api.rest.model.ApiResponse;
-import com.dev2ever.model.User;
-import com.dev2ever.repository.UserRepository;
+import com.dev2ever.util.OperationResult;
+import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -17,7 +16,7 @@ import jakarta.ws.rs.core.Response;
  * This class provides endpoints for creating, retrieving, and managing user resources.
  * All endpoints require "user" role authorization.
  */
-@Path("/users")
+@Path("/user")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @RequestScoped
@@ -25,7 +24,8 @@ import jakarta.ws.rs.core.Response;
 public class UserResource {
 
     @Inject
-    private UserRepository userRepository;
+    private KeycloakAdminService keycloakAdminService;
+
 
     /**
      * Creates a new user in the system.
@@ -38,8 +38,11 @@ public class UserResource {
      * 500 (Internal Server Error) if an unexpected error occurs
      */
     @POST
-    public Response createUser(User newUser) {
-        OperationResult<User> operationResult = userRepository.save(newUser);
+    @Path("/create")
+    @PermitAll
+    public Response createUser(UserDto newUser) {
+//        return ApiResponse.success().buildCreatedResponse();
+        OperationResult<Void> operationResult = keycloakAdminService.createUser(newUser);
 
         if (operationResult.isSuccess()) {
             return ApiResponse.success(operationResult.getValue()).buildCreatedResponse();
@@ -55,8 +58,10 @@ public class UserResource {
      * @return Response with status 200 (OK) and a list of all users in the system
      */
     @GET
+    @Path("/list")
     public Response getUsers() {
-        return ApiResponse.success(userRepository.findAll()).buildOkResponse();
+        return ApiResponse.success().buildCreatedResponse();
+//        return ApiResponse.success(userRepository.findAll()).buildOkResponse();
     }
 
     /**
@@ -68,11 +73,12 @@ public class UserResource {
      * 204 (No Content) if user not found
      */
     @GET
-    @Path("/{id}")
-    public Response getUserById(@PathParam("id") Long id) {
-        return userRepository.findById(id)
-                .map(user -> ApiResponse.success(user).buildOkResponse())
-                .orElseGet(() -> ApiResponse.success().buildNoContentResponse());
+    @Path("/find")
+    public Response getUserById(@QueryParam("id") Long id) {
+        return ApiResponse.success().buildCreatedResponse();
+//        return userRepository.findById(id)
+//                .map(user -> ApiResponse.success(user).buildOkResponse())
+//                .orElseGet(() -> ApiResponse.success().buildNoContentResponse());
     }
 
     /**
@@ -85,16 +91,17 @@ public class UserResource {
      * 500 (Internal Server Error) if an unexpected error occurs
      */
     @DELETE
-    @Path("/{id}")
-    public Response deleteUser(@PathParam("id") Long id) {
-        OperationResult<Void> operationResult = userRepository.deleteById(id);
-
-        if (operationResult.isSuccess()) {
-            return ApiResponse.success().buildOkResponse();
-        } else {
-            return ApiResponse.error(operationResult.getErrorMessage(), operationResult.getErrorCode())
-                    .buildDynamicErrorResponse();
-        }
+    @Path("/delete")
+    public Response deleteUser(@QueryParam("id") Long id) {
+        return ApiResponse.success().buildCreatedResponse();
+//        OperationResult<Void> operationResult = userRepository.deleteById(id);
+//
+//        if (operationResult.isSuccess()) {
+//            return ApiResponse.success().buildOkResponse();
+//        } else {
+//            return ApiResponse.error(operationResult.getErrorMessage(), operationResult.getErrorCode())
+//                    .buildDynamicErrorResponse();
+//        }
     }
 
     /**
@@ -110,15 +117,33 @@ public class UserResource {
      * 500 (Internal Server Error) if an unexpected error occurs
      */
     @PUT
-    @Path("/{id}")
-    public Response updateUser(@PathParam("id") Long id, User updatedUser) {
-        OperationResult<User> operationResult = userRepository.updateUserFields(id, updatedUser);
-
-        if (operationResult.isSuccess()) {
-            return ApiResponse.success(operationResult.getValue()).buildOkResponse();
-        } else {
-            return ApiResponse.error(operationResult.getErrorMessage(), operationResult.getErrorCode())
-                    .buildDynamicErrorResponse();
-        }
+    @Path("/update")
+    public Response updateUser(@QueryParam("id") Long id, UserDto updatedUser) {
+        return ApiResponse.success().buildCreatedResponse();
+//        OperationResult<User> operationResult = userRepository.updateUserFields(id, updatedUser);
+//
+//        if (operationResult.isSuccess()) {
+//            return ApiResponse.success(operationResult.getValue()).buildOkResponse();
+//        } else {
+//            return ApiResponse.error(operationResult.getErrorMessage(), operationResult.getErrorCode())
+//                    .buildDynamicErrorResponse();
+//        }
     }
+//
+//    @Inject
+//    private KeycloakAdminService keycloakAdminService;
+//
+//    @POST
+//    @Path("/register")
+//    public Response registerUser(UserCreationDto userDto) {
+//        try {
+//            keycloakAdminService.createUser(userDto);
+//            return Response.status(Response.Status.CREATED).entity("{\"message\":\"User created successfully\"}").build();
+//        } catch (Exception e) {
+//            // Basic error handling
+//            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+//                    .entity("{\"error\":\"" + e.getMessage() + "\"}")
+//                    .build();
+//        }
+//    }
 }

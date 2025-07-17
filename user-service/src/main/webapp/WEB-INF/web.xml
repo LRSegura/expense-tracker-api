@@ -4,6 +4,15 @@
                              https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
          version="5.0">
 
+    <!-- This constraint makes the user creation endpoint public -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Public REST API</web-resource-name>
+            <url-pattern>/api/user/create</url-pattern>
+        </web-resource-collection>
+    </security-constraint>
+
+    <!--This constraint protects all other API endpoints -->
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Protected REST API</web-resource-name>
@@ -14,11 +23,12 @@
         </auth-constraint>
     </security-constraint>
 
+    <!-- This activates the OIDC subsystem for the application -->
     <login-config>
         <auth-method>OIDC</auth-method>
-        <realm-name>Keycloak</realm-name>
     </login-config>
 
+    <!-- This declares the application roles -->
     <security-role>
         <role-name>user</role-name>
     </security-role>
