@@ -20,6 +20,7 @@ public enum ErrorCode {
     DUPLICATE_RESOURCE,
 
     NOT_FOUND,
+    BAD_REQUEST,
     /**
      * Indicates an unexpected error occurred during processing.
      * Used for system-level errors that are not handled by other specific error codes.

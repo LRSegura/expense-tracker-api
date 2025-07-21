@@ -1,6 +1,7 @@
 package com.dev2ever.api.rest;
 
 public record UserDto(
+        String id,
         String username,
         String email,
         String firstName,
@@ -10,7 +11,8 @@ public record UserDto(
     @Override
     public String toString() {
         return "UserDto{" +
-                "username='" + username + '\'' +
+                "id='" + id + '\'' +
+                ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

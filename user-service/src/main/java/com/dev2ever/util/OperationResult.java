@@ -47,7 +47,7 @@ public class OperationResult<T> {
      *
      * @return A new OperationResult instance representing a successful operation with no value
      */
-    public static OperationResult<Void> success() {
+    public static <T> OperationResult<T> success() {
         return new OperationResult<>(null, null, null);
     }
 
